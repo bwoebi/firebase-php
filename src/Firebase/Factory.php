@@ -22,6 +22,7 @@ use Google\Cloud\Storage\StorageClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Utils as GuzzleUtils;
 use Kreait\Firebase\AppCheck\AppCheckTokenGenerator;
@@ -41,6 +42,7 @@ use Kreait\Firebase\Messaging\AppInstanceApiClient;
 use Kreait\Firebase\Messaging\RequestFactory;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Clock\ClockInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -540,7 +542,7 @@ final class Factory
 
         $config = [...$this->httpClientOptions->guzzleConfig(), ...$config];
 
-        $handler = HandlerStack::create();
+        $handler = HandlerStack::create($this->httpClientOptions->guzzleHandler());
 
         if ($this->httpLogMiddleware) {
             $handler->push($this->httpLogMiddleware, 'http_logs');
